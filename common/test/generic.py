@@ -156,7 +156,16 @@ class TestCaseCfg(TestCase):
     """
 
     def setUp(self):
+        """
+        """
         super(TestCaseCfg, self).setUp()
+
+        # Testing explicitly instead of try-except
+        # because we are doing unittesting here.
+        if config.Config._instance:
+            # Delete the config instance from the previous unittest
+            config.Config._instance = None
+
         self.cfg = config.Config(self.cfgFile, self.sharePath)
 
         # mock notifyplugin to suppress notifications
@@ -164,6 +173,11 @@ class TestCaseCfg(TestCase):
         self.mockNotifyPlugin = patcher.start()
 
         self.cfg.PLUGIN_MANAGER.load()
+
+    def tearDown(self):
+        """
+        """
+        config.Config._instance = None
 
 
 class TestCaseSnapshotPath(TestCaseCfg):
